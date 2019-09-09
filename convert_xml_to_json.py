@@ -9,8 +9,8 @@ Created on Fri Sep  6 10:33:05 2019
 #CSP:2
 #CH:3
 #T:4
-inf_kind={"CM":0,"P":1,"CSP":2,"CH":3,"T":4,"csp":2,"cerebellum":3}
-path_cere='C:\\Users\\LKJ\\Desktop\\new_part_five\\cerebellum\\xml'
+inf_kind={"CM":1,"P":2,"CSP":3,"CH":4,"T":5}
+path_cere='C:\\Users\\LKJ\\Desktop\\new_part_five\\cerebellum\\train\\xml'
 image_id=1
 ci=1
 import os
@@ -18,6 +18,7 @@ import json
 from xml.dom.minidom import parse
 xml_files=os.listdir(path_cere)
 information_all_pic={}
+id_annotations=1
 for single_xml in xml_files:
     path_xmll=path_cere+'\\'+single_xml
     xml_ = parse(path_xmll)
@@ -36,6 +37,10 @@ for single_xml in xml_files:
         #print(len(kind.childNodes))
         #print('kind:',kind.childNodes[1].toxml()[6:-7])
         kind_=kind.childNodes[1].toxml()[6:-7]
+        if kind_ == "csp":
+           kind_ = "CSP"
+        if kind_ == "cerebellum":
+           kind_ = "CH"
         category_id=inf_kind[kind_]
         #print(kind.childNodes[9].childNodes[1].toxml()[6:-7])#xmin
         x=kind.childNodes[9].childNodes[1].toxml()[6:-7]
@@ -47,6 +52,8 @@ for single_xml in xml_files:
         height=str(int(kind.childNodes[9].childNodes[7].toxml()[6:-7])-int(y))
         annotations[(x,y,width,height)]=category_id
         information_all_pic[ci]={'img_width':img_width,'img_height':img_height,'annotations':annotations}
+        information_all_pic[ci]['id_bbox']=id_annotations
+        id_annotations +=1
     information_all_pic[ci]['file_name']=single_xml[:-4]+'.jpg'
     information_all_pic[ci]['id']=image_id
     image_id+=1
@@ -57,7 +64,7 @@ images={}
 infor_list=[]
 annotations_list=[]
 annot_dic_if={}
-print(len(information_all_pic))
+print('counts of pic:',len(information_all_pic))
 for single_id in information_all_pic:
     #print(single_id)
     single_dic={}
@@ -77,15 +84,16 @@ for single_id in information_all_pic:
     segmentation=[[56,0,56,150,164,150,164,0]]
     area=16200
     iscrowd=0
-    category_id=2
+    #category_id=2
     #print(information_all_pic[single_id]['annotations'])
     for box in information_all_pic[single_id]['annotations']:
         annot_dic_if["segmentation"]=segmentation
         annot_dic_if["area"]=area
         annot_dic_if["iscrow"]=iscrowd
         annot_dic_if["bbox"]=box
-        annot_dic_if["category"]=information_all_pic[single_id]['annotations'][box]
+        annot_dic_if["category_id"]=information_all_pic[single_id]['annotations'][box]
         annot_dic_if["image_id"]=single_dic["id"]
+        annot_dic_if["id"]=information_all_pic[single_id]['id_bbox']
         #print(annot_dic_if)
         annotations_list.append(annot_dic_if)
 #[
@@ -106,7 +114,7 @@ for sin_ in inf_kind:
 all_["images"]=infor_list
 all_["annotations"]=annotations_list
 all_["categories"]=catg_list
-with open ('coco.json','w') as json_t:
+with open ('C:\\Users\\LKJ\\Desktop\\new_part_five\\cerebellum\\train\\cere_train2019.json','w') as json_t:
     json_t.write(json.dumps(all_))
 
 
