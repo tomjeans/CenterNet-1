@@ -117,7 +117,8 @@ We provide scripts for all the experiments in the [experiments](experiments) fol
 
 ## Develop
 
-If you are interested in training CenterNet in a new dataset, use CenterNet in a new task, or use a new network architecture for CenterNet, please refer to [DEVELOP.md](readme/DEVELOP.md). Also feel free to send us emails for discussions or suggestions.
+If you are interested in training CenterNet in a new dataset, use CenterNet in a new task, or use a new network architecture for CenterNet, please refer to [DEVELOP.md](readme/DEVELOP.md). Also feel free to send us emails for discussions or suggestions.Add
+the code to process the xmls to json coco.
 
 ## Third-party implementation
 
