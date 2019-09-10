@@ -10,7 +10,7 @@ Created on Fri Sep  6 10:33:05 2019
 #CH:3
 #T:4
 inf_kind={"CM":1,"P":2,"CSP":3,"CH":4,"T":5}
-path_cere='C:\\Users\\LKJ\\Desktop\\new_part_five\\cerebellum\\train\\xml'
+path_cere='C:\\Users\\LKJ\\Desktop\\new_part_five\\cerebellum\\evl\\xml'
 image_id=1
 ci=1
 import os
@@ -51,9 +51,11 @@ for single_xml in xml_files:
         #print(kind.childNodes[9].childNodes[7].toxml()[6:-7])#ymax
         height=str(int(kind.childNodes[9].childNodes[7].toxml()[6:-7])-int(y))
         annotations[(x,y,width,height)]=category_id
+        #print('annotations:',annotations)
         information_all_pic[ci]={'img_width':img_width,'img_height':img_height,'annotations':annotations}
-        information_all_pic[ci]['id_bbox']=id_annotations
-        id_annotations +=1
+        #information_all_pic[ci]['id_bbox']=id_annotations
+        #id_anotations +=1
+    #print('information_all_pic:',information_all_pic)
     information_all_pic[ci]['file_name']=single_xml[:-4]+'.jpg'
     information_all_pic[ci]['id']=image_id
     image_id+=1
@@ -63,18 +65,19 @@ all_={}
 images={}
 infor_list=[]
 annotations_list=[]
-annot_dic_if={}
+
 print('counts of pic:',len(information_all_pic))
 for single_id in information_all_pic:
-    #print(single_id)
+    print('single_id:',single_id)
     single_dic={}
     single_dic["file_name"]=information_all_pic[single_id]['file_name']
     single_dic["height"]=information_all_pic[single_id]['img_height']
     single_dic["width"]=information_all_pic[single_id]['img_width']
     single_dic["id"]=information_all_pic[single_id]['id']
     infor_list.append(single_dic)
+    #print('infor_list:',infor_list)
 #{"segmentation":[[56,0,56,150,164,150,164,0]],
-# "area":16200,
+# "area":1.0,
 # "iscrowd":0,
 # "image_id":2008000015,
 # "bbox":[56,0,108,150],
@@ -82,20 +85,25 @@ for single_id in information_all_pic:
 # "id":4,
 # "ignore":0}
     segmentation=[[56,0,56,150,164,150,164,0]]
-    area=16200
+    area=1.0
     iscrowd=0
     #category_id=2
     #print(information_all_pic[single_id]['annotations'])
     for box in information_all_pic[single_id]['annotations']:
+        print(box)
+        print(single_id)
+        annot_dic_if={}
         annot_dic_if["segmentation"]=segmentation
         annot_dic_if["area"]=area
-        annot_dic_if["iscrow"]=iscrowd
+        annot_dic_if["iscrowd"]=iscrowd
         annot_dic_if["bbox"]=box
         annot_dic_if["category_id"]=information_all_pic[single_id]['annotations'][box]
         annot_dic_if["image_id"]=single_dic["id"]
-        annot_dic_if["id"]=information_all_pic[single_id]['id_bbox']
+        annot_dic_if["id"]=id_annotations
+        id_annotations +=1
         #print(annot_dic_if)
         annotations_list.append(annot_dic_if)
+#print('info_:',annotations_list)
 #[
 #{"supercategory":"none","id":1,"name":"aeroplane"},
 #{"supercategory":"none","id":2,"name":"bicycle"},
@@ -114,7 +122,7 @@ for sin_ in inf_kind:
 all_["images"]=infor_list
 all_["annotations"]=annotations_list
 all_["categories"]=catg_list
-with open ('C:\\Users\\LKJ\\Desktop\\new_part_five\\cerebellum\\train\\cere_train2019.json','w') as json_t:
+with open ('C:\\Users\\LKJ\\Desktop\\new_part_five\\cerebellum\\evl\\cere_evl2019.json','w') as json_t:
     json_t.write(json.dumps(all_))
 
 
